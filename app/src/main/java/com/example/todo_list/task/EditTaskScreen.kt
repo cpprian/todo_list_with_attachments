@@ -6,6 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -17,9 +18,12 @@ fun EditTaskScreen(
     viewModel: TaskViewModel,
     onNavigateUp: () -> Unit
 ) {
-    val task = viewModel.getSelectedTask(id).collectAsState(initial = null)
-    var title by remember { mutableStateOf(task.value?.title) }
-    var description by remember { mutableStateOf(task.value?.description) }
+    val task = viewModel.getSelectedTask(id).observeAsState().value
+    if (task?.title == null) {
+        return
+    }
+    var title by remember { mutableStateOf(task.title) }
+    var description by remember { mutableStateOf(task.description) }
 
     Column(
         modifier = Modifier
@@ -33,14 +37,14 @@ fun EditTaskScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
-            value = title?:"",
+            value = title,
             onValueChange = { title = it },
             label = { Text(text = "Title") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
-            value = description?:"",
+            value = description,
             onValueChange = { description = it },
             label = { Text(text = "Description") },
             modifier = Modifier.fillMaxWidth()
@@ -48,13 +52,11 @@ fun EditTaskScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                val updatedTask = task.value?.copy(
-                    title = title?:"",
-                    description = description?:""
+                val updatedTask = task.copy(
+                    title = title,
+                    description = description
                 )
-                if (updatedTask != null) {
-                    viewModel.insertTask(updatedTask)
-                }
+                viewModel.insertTask(updatedTask)
                 onNavigateUp()
             }
         ) {

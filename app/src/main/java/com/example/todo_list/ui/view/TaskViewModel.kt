@@ -28,8 +28,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getSelectedTask(taskId: Int): Flow<Task> {
-        return taskDao.getSelectedTask(taskId)
+    fun getSelectedTask(taskId: Int): LiveData<Task> {
+        return requireNotNull(taskDao.getSelectedTask(taskId).asLiveData())
     }
 
     fun sortByPriorityLow(): LiveData<List<Task>> {
