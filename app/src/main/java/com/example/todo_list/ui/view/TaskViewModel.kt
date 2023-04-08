@@ -21,15 +21,9 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun deleteTask(task: Task) {
+    fun deleteTask(taskId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskDao.delete(task)
-        }
-    }
-
-    fun updateTask(task: Task) {
-        viewModelScope.launch(Dispatchers.IO) {
-            taskDao.update(task)
+            taskDao.delete(taskId)
         }
     }
 

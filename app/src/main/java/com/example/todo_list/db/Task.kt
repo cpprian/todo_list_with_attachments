@@ -1,7 +1,6 @@
 package com.example.todo_list.db
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 @Entity(tableName = "tasks")
 data class Task(
