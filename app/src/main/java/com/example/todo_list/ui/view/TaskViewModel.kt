@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.todo_list.db.Task
 import com.example.todo_list.db.TaskDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
@@ -27,8 +28,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getSelectedTask(taskId: Int): LiveData<Task> {
-        return taskDao.getSelectedTask(taskId).asLiveData()
+    fun getSelectedTask(taskId: Int): Flow<Task> {
+        return taskDao.getSelectedTask(taskId)
     }
 
     fun sortByPriorityLow(): LiveData<List<Task>> {
