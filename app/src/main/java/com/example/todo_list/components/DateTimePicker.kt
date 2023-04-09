@@ -14,18 +14,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import com.example.todo_list.util.toDate
+import com.example.todo_list.util.toTime
 import java.util.*
 
 @Composable
 fun DateTimePicker(
-    doneAt: String,
+    doneAt: Long,
     selectedDate: Calendar,
     selectedTime: Calendar,
 ) {
     val context = LocalContext.current
 
-    var doneAtDate by remember { mutableStateOf("") }
-    var doneAtTime by remember { mutableStateOf("") }
+    var doneAtDate by remember { mutableStateOf(doneAt.toDate()) }
+    var doneAtTime by remember { mutableStateOf(doneAt.toTime()) }
 
     Row (modifier = Modifier.fillMaxWidth()) {
         Column(

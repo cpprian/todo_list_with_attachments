@@ -1,21 +1,14 @@
 package com.example.todo_list.task
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.widget.DatePicker
-import android.widget.TimePicker
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.todo_list.components.DateTimePicker
 import com.example.todo_list.components.PriorityComponent
 import com.example.todo_list.constants.toInt
@@ -60,7 +53,7 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         DateTimePicker(
-            doneAt = (selectedDate.timeInMillis + selectedTime.timeInMillis - Calendar.getInstance().timeInMillis).toString(),
+            doneAt = selectedDate.timeInMillis + selectedTime.timeInMillis - Calendar.getInstance().timeInMillis,
             selectedDate = selectedDate,
             selectedTime = selectedTime)
         Spacer(modifier = Modifier.height(16.dp))

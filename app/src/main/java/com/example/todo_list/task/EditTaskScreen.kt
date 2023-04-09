@@ -10,11 +10,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.todo_list.components.DateTimePicker
 import com.example.todo_list.components.PriorityComponent
 import com.example.todo_list.constants.Priority
 import com.example.todo_list.constants.toInt
 import com.example.todo_list.constants.toPriority
 import com.example.todo_list.ui.view.TaskViewModel
+import java.util.*
 
 @Composable
 fun EditTaskScreen(
@@ -29,6 +31,8 @@ fun EditTaskScreen(
     var title by remember { mutableStateOf(task.title) }
     var description by remember { mutableStateOf(task.description) }
     var priority by remember { mutableStateOf(toPriority(task.priority)) }
+    val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
+    val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
 
     Column(
         modifier = Modifier
@@ -60,6 +64,11 @@ fun EditTaskScreen(
             label = { Text(text = "Description") },
             modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        DateTimePicker(
+            doneAt = task.doneAt,
+            selectedDate = selectedDate,
+            selectedTime = selectedTime)
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
