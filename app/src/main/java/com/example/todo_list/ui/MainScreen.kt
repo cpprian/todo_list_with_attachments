@@ -40,7 +40,7 @@ fun MainScreen(
                             imageVector = Icons.Filled.Sort,
                             contentDescription = stringResource(R.string.sort))
                     }
-                    IconButton(onClick = { /* TODO */ }) {
+                    IconButton(onClick = { navController.navigate("settings_screen") }) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
                             contentDescription = stringResource(R.string.settings))

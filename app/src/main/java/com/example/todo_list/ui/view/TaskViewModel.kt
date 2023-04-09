@@ -21,7 +21,11 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     var tasks: LiveData<List<Task>> = taskDao.getAll().asLiveData()
     var priority: MutableState<Priority> = mutableStateOf(Priority.LOW)
     var sortBy: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    var onlyUncompleted: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+    fun getTasks() {
+        tasks = taskDao.getAll().asLiveData()
+    }
     fun insertTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             taskDao.insert(task)
@@ -50,12 +54,12 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         return taskDao.searchDatabase(searchQuery).asLiveData()
     }
 
-    fun getUncompletedTasks(): LiveData<List<Task>> {
-        return taskDao.getUncompletedTasks().asLiveData()
+    fun getUncompletedTasks() {
+        tasks = taskDao.getUncompletedTasks().asLiveData()
     }
 
-    fun getTasksByTag(tag: String): LiveData<List<Task>> {
-        return taskDao.getTasksByTag(tag).asLiveData()
+    fun getTasksByTag(tag: String) {
+        tasks = taskDao.getTasksByTag(tag).asLiveData()
     }
 
     fun getTags(): LiveData<List<String>> {

@@ -77,6 +77,14 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
+            composable(route = "settings_screen") {
+                SettingsScreen(
+                    viewModel = viewModel,
+                    onNavigateUp = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
     }
 }
