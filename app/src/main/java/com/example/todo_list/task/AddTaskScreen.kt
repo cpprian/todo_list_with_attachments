@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContentProviderCompat.requireContext
+import com.example.todo_list.components.DateTimePicker
 import com.example.todo_list.components.PriorityComponent
 import com.example.todo_list.constants.toInt
 import com.example.todo_list.db.Task
@@ -24,13 +25,10 @@ import java.util.*
 
 @Composable
 fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
-    val context = LocalContext.current
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
     val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
-    var doneAtDate by remember { mutableStateOf("") }
-    var doneAtTime by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -61,68 +59,10 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Row (modifier = Modifier.fillMaxWidth()) {
-            Column(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .weight(1f)
-            ) {
-                Button(
-                    onClick = {
-                        val datePickerDialog = DatePickerDialog(
-                            context,
-                            { view, year, month, dayOfMonth ->
-                                selectedDate.set(Calendar.YEAR, year)
-                                selectedDate.set(Calendar.MONTH, month)
-                                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                                doneAtDate = "${selectedDate.get(Calendar.DAY_OF_MONTH)}/" +
-                                        "${selectedDate.get(Calendar.MONTH)}/${selectedDate.get(Calendar.YEAR)}"
-                            },
-                            selectedDate.get(Calendar.YEAR),
-                            selectedDate.get(Calendar.MONTH),
-                            selectedDate.get(Calendar.DAY_OF_MONTH)
-                        )
-                        datePickerDialog.show()
-                    }
-                ) {
-                    Text(text = "Date")
-                }
-                Text(
-                    text = doneAtDate,
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black)
-            }
-            Column(
-                modifier = Modifier
-                    .wrapContentHeight()
-            ) {
-                Button(
-                    onClick = {
-                        val timePickerDialog = TimePickerDialog(
-                            context,
-                            { view, hourOfDay, minute ->
-                                selectedTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                                selectedTime.set(Calendar.MINUTE, minute)
-                                doneAtTime = "${selectedTime.get(Calendar.HOUR_OF_DAY)}:" +
-                                        "${selectedTime.get(Calendar.MINUTE)}"
-                            },
-                            selectedTime.get(Calendar.HOUR_OF_DAY),
-                            selectedTime.get(Calendar.MINUTE),
-                            false
-                        )
-                        timePickerDialog.show()
-                    }
-                ) {
-                    Text(text = "Time")
-                }
-                Text(
-                    text = doneAtTime,
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black)
-            }
-        }
+        DateTimePicker(
+            doneAt = (selectedDate.timeInMillis + selectedTime.timeInMillis - Calendar.getInstance().timeInMillis).toString(),
+            selectedDate = selectedDate,
+            selectedTime = selectedTime)
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
