@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColor
 import androidx.navigation.NavController
 import com.example.todo_list.constants.toColor
 import com.example.todo_list.constants.toPriority
@@ -34,67 +34,139 @@ fun TaskItem(
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(end = 8.dp),
         ) {
             Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Checkbox(
-                    checked = task.isCompleted,
-                    onCheckedChange = { isChecked ->
-                        onTaskCheckChanged(task, isChecked)
-                        Toast.makeText(
-                            context,
-                            "Task ${task.title} is ${if (isChecked) "completed" else "not completed"}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    },
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = task.title,
+                Row(
                     modifier = Modifier
-                        .padding(end = 15.dp),
-                    style = MaterialTheme.typography.h6,
-                    color = if (task.isCompleted) Color.Gray else Color.Black
-                )
-                Box(
-                    modifier = Modifier
-                        .size(18.dp)
-                        .background(
-                            color = toPriority(task.priority).toColor(),
-                            shape = MaterialTheme.shapes.small)
-                )
-                if (task.attachment != null) {
+                        .weight(1f)
+                        .padding(end = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = task.isCompleted,
+                        onCheckedChange = { isChecked ->
+                            onTaskCheckChanged(task, isChecked)
+                            Toast.makeText(
+                                context,
+                                "Task ${task.title} is ${if (isChecked) "completed" else "not completed"}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        },
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = task.title,
+                        modifier = Modifier
+                            .padding(end = 15.dp),
+                        style = MaterialTheme.typography.h6,
+                        color = if (task.isCompleted) Color.Gray else Color.Black
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .background(
+                                color = toPriority(task.priority).toColor(),
+                                shape = MaterialTheme.shapes.small
+                            )
+                    )
+                    if (task.attachment != null) {
+                        Icon(
+                            imageVector = Icons.Filled.Attachment,
+                            contentDescription = null
+                        )
+                    }
+                }
+                IconButton(
+                    onClick = onDeleteClick
+                ) {
                     Icon(
-                        imageVector = Icons.Filled.Attachment,
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = null
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        navController.navigate("edit_task_screen/${task.id}")
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
                         contentDescription = null
                     )
                 }
             }
-            IconButton(
-                onClick = onDeleteClick
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Delete,
-                    contentDescription = null
-                )
-            }
-            IconButton(
-                onClick = {
-                    navController.navigate("edit_task_screen/${task.id}")
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Created at",
+                        style = MaterialTheme.typography.body2,
+                        fontWeight = FontWeight.Bold,
+                        color = if (task.isCompleted) Color.Gray else Color.Black
+                    )
+                    Text(
+                        text = "${task.createdAt}",
+                        style = MaterialTheme.typography.body2,
+                        color = if (task.isCompleted) Color.Gray else Color.Black
+                    )
                 }
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Deadline at",
+                        style = MaterialTheme.typography.body2,
+                        fontWeight = FontWeight.Bold,
+                        color = if (task.isCompleted) Color.Gray else Color.Black
+                    )
+                    Text(
+                        text = "${task.doneAt}",
+                        style = MaterialTheme.typography.body2,
+                        color = if (task.isCompleted) Color.Gray else Color.Black
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Edit,
-                    contentDescription = null
+                Text(
+                    text = task.tag,
+                    modifier = Modifier
+                        .weight(0.25f)
+                        .padding(end = 8.dp),
+                    style = MaterialTheme.typography.body1,
+                    color = if (task.isCompleted) Color.Gray else Color.Black
+                )
+                Text(
+                    text = if (task.description.length > 30) task.description.slice(0..25) + "..." else task.description,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
+                    style = MaterialTheme.typography.body1,
+                    color = if (task.isCompleted) Color.Gray else Color.Black
                 )
             }
         }
