@@ -18,8 +18,9 @@ import kotlinx.coroutines.launch
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
     private val taskDao = TaskDatabase.getInstance(application).taskDao()
-    val tasks: LiveData<List<Task>> = taskDao.getAll().asLiveData()
+    var tasks: LiveData<List<Task>> = taskDao.getAll().asLiveData()
     var priority: MutableState<Priority> = mutableStateOf(Priority.LOW)
+    var sortBy: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     fun insertTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -37,12 +38,12 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         return requireNotNull(taskDao.getSelectedTask(taskId).asLiveData())
     }
 
-    fun sortByPriorityLow(): LiveData<List<Task>> {
-        return taskDao.sortByPriorityLow().asLiveData()
+    fun sortByPriorityLow() {
+        tasks = taskDao.sortByPriorityLow().asLiveData()
     }
 
-    fun sortByPriorityHigh(): LiveData<List<Task>> {
-        return taskDao.sortByPriorityHigh().asLiveData()
+    fun sortByPriorityHigh() {
+        tasks = taskDao.sortByPriorityHigh().asLiveData()
     }
 
     fun searchDatabase(searchQuery: String): LiveData<List<Task>> {

@@ -17,10 +17,10 @@ interface TaskDao {
     @Query("DELETE FROM tasks WHERE id=:taskId")
     suspend fun delete(taskId: Int)
 
-    @Query("SELECT * FROM tasks ORDER BY priority DESC")
+    @Query("SELECT * FROM tasks ORDER BY doneAT DESC, priority DESC")
     fun sortByPriorityLow(): Flow<List<Task>>
 
-    @Query("SELECT * FROM tasks ORDER BY priority ASC")
+    @Query("SELECT * FROM tasks ORDER BY doneAt ASC, priority DESC")
     fun sortByPriorityHigh(): Flow<List<Task>>
 
     @Query("SELECT * FROM tasks WHERE title LIKE :searchQuery OR description LIKE :searchQuery")
