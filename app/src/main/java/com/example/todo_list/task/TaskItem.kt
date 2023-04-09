@@ -1,19 +1,21 @@
 package com.example.todo_list.task
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Attachment
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColor
 import androidx.navigation.NavController
+import com.example.todo_list.constants.toColor
+import com.example.todo_list.constants.toPriority
 import com.example.todo_list.db.Task
 
 @Composable
@@ -36,13 +38,21 @@ fun TaskItem(
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = 8.dp)
+                    .padding(end = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = task.title,
                     modifier = Modifier
                         .padding(end = 15.dp),
                     style = MaterialTheme.typography.h6
+                )
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .background(
+                            color = toPriority(task.priority).toColor(),
+                            shape = MaterialTheme.shapes.small)
                 )
                 if (task.attachment != null) {
                     Icon(
@@ -65,7 +75,7 @@ fun TaskItem(
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Settings,
+                    imageVector = Icons.Filled.Edit,
                     contentDescription = null
                 )
             }

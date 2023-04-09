@@ -10,6 +10,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.todo_list.components.PriorityComponent
+import com.example.todo_list.constants.Priority
+import com.example.todo_list.constants.toInt
+import com.example.todo_list.constants.toPriority
 import com.example.todo_list.ui.view.TaskViewModel
 
 @Composable
@@ -24,6 +28,7 @@ fun EditTaskScreen(
     }
     var title by remember { mutableStateOf(task.title) }
     var description by remember { mutableStateOf(task.description) }
+    var priority by remember { mutableStateOf(toPriority(task.priority)) }
 
     Column(
         modifier = Modifier
@@ -43,6 +48,12 @@ fun EditTaskScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
+        PriorityComponent(
+            priority = priority,
+            onPrioritySelected = {
+                priority = it
+        })
+        Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
@@ -54,7 +65,8 @@ fun EditTaskScreen(
             onClick = {
                 val updatedTask = task.copy(
                     title = title,
-                    description = description
+                    description = description,
+                    priority = priority.toInt()
                 )
                 viewModel.insertTask(updatedTask)
                 onNavigateUp()

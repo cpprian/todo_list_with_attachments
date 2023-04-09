@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.todo_list.components.PriorityComponent
 import com.example.todo_list.db.Task
 import com.example.todo_list.ui.view.TaskViewModel
 
@@ -35,6 +36,10 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
             label = { Text(text = "Title") },
             modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        PriorityComponent(
+            priority = viewModel.priority.value,
+            onPrioritySelected = { viewModel.priority.value = it })
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = description,
