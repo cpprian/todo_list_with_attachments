@@ -23,6 +23,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     var sortBy: MutableStateFlow<Boolean> = MutableStateFlow(false)
     var onlyUncompleted: MutableStateFlow<Boolean> = MutableStateFlow(false)
     var sortOption: MutableStateFlow<String> = MutableStateFlow("")
+    var notificationLength: MutableStateFlow<Int> = MutableStateFlow(0)
 
     fun getTasks() {
         tasks = taskDao.getAll().asLiveData()
