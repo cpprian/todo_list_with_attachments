@@ -72,7 +72,12 @@ fun TaskItem(
                                 Toast.LENGTH_SHORT
                             ).show()
                         },
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .background(
+                                color = toPriority(task.priority).toColor(),
+                                shape = MaterialTheme.shapes.small
+                            )
                     )
                     Text(
                         text = task.title,
@@ -81,20 +86,12 @@ fun TaskItem(
                         style = MaterialTheme.typography.h6,
                         color = if (task.isCompleted) Color.Gray else Color.Black
                     )
-                    Box(
-                        modifier = Modifier
-                            .size(18.dp)
-                            .background(
-                                color = toPriority(task.priority).toColor(),
-                                shape = MaterialTheme.shapes.small
-                            )
+                }
+                if (task.attachment != null) {
+                    Icon(
+                        imageVector = Icons.Filled.Attachment,
+                        contentDescription = null
                     )
-                    if (task.attachment != null) {
-                        Icon(
-                            imageVector = Icons.Filled.Attachment,
-                            contentDescription = null
-                        )
-                    }
                 }
                 IconButton(
                     onClick = onDeleteClick

@@ -1,6 +1,8 @@
 package com.example.todo_list.task
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
@@ -8,8 +10,16 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.todo_list.R
 import com.example.todo_list.components.DateTimePicker
 import com.example.todo_list.components.PriorityComponent
 import com.example.todo_list.constants.Priority
@@ -18,12 +28,15 @@ import com.example.todo_list.constants.toPriority
 import com.example.todo_list.ui.view.TaskViewModel
 import java.util.*
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EditTaskScreen(
     id: Int,
     viewModel: TaskViewModel,
     onNavigateUp: () -> Unit
 ) {
+    val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
+
     val task = viewModel.getSelectedTask(id).observeAsState().value
     if (task?.title == null) {
         return
@@ -31,6 +44,7 @@ fun EditTaskScreen(
     var title by remember { mutableStateOf(task.title) }
     var description by remember { mutableStateOf(task.description) }
     var priority by remember { mutableStateOf(toPriority(task.priority)) }
+    var tag by remember { mutableStateOf(task.tag) }
     val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
     val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
 
@@ -48,8 +62,11 @@ fun EditTaskScreen(
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
-            label = { Text(text = "Title") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text(text = stringResource(R.string.title_task)) },
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 1,
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
         )
         Spacer(modifier = Modifier.height(16.dp))
         PriorityComponent(
@@ -61,8 +78,21 @@ fun EditTaskScreen(
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text(text = "Description") },
-            modifier = Modifier.fillMaxWidth()
+            label = { Text(text = stringResource(R.string.description_task)) },
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 5,
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedTextField(
+            value = tag,
+            onValueChange = { tag = it },
+            label = { Text(text = stringResource(R.string.category_task)) },
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 1,
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
         )
         Spacer(modifier = Modifier.height(16.dp))
         DateTimePicker(
@@ -75,7 +105,9 @@ fun EditTaskScreen(
                 val updatedTask = task.copy(
                     title = title,
                     description = description,
-                    priority = priority.toInt()
+                    priority = priority.toInt(),
+                    doneAt = selectedDate.timeInMillis + selectedTime.timeInMillis - Calendar.getInstance().timeInMillis,
+                    tag = tag,
                 )
                 viewModel.insertTask(updatedTask)
                 onNavigateUp()
