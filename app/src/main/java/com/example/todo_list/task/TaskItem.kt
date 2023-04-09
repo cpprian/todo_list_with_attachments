@@ -1,5 +1,6 @@
 package com.example.todo_list.task
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColor
 import androidx.navigation.NavController
@@ -22,8 +24,11 @@ import com.example.todo_list.db.Task
 fun TaskItem(
     task: Task,
     navController: NavController,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onTaskCheckChanged: (Task, Boolean) -> Unit
 ) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,15 +46,28 @@ fun TaskItem(
                     .padding(end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Checkbox(
+                    checked = task.isCompleted,
+                    onCheckedChange = { isChecked ->
+                        onTaskCheckChanged(task, isChecked)
+                        Toast.makeText(
+                            context,
+                            "Task ${task.title} is ${if (isChecked) "completed" else "not completed"}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 Text(
                     text = task.title,
                     modifier = Modifier
                         .padding(end = 15.dp),
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.h6,
+                    color = if (task.isCompleted) Color.Gray else Color.Black
                 )
                 Box(
                     modifier = Modifier
-                        .size(16.dp)
+                        .size(18.dp)
                         .background(
                             color = toPriority(task.priority).toColor(),
                             shape = MaterialTheme.shapes.small)

@@ -34,4 +34,7 @@ interface TaskDao {
 
     @Query("SELECT DISTINCT tag FROM tasks")
     fun getTags(): Flow<List<String>>
+
+    @Query("UPDATE tasks SET isCompleted = :isCompleted WHERE id = :taskId")
+    suspend fun checkTask(taskId: Int, isCompleted: Boolean)
 }

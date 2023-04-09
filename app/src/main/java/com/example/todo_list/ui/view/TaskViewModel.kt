@@ -60,5 +60,11 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     fun getTags(): LiveData<List<String>> {
         return taskDao.getTags().asLiveData()
     }
+
+    fun checkTask(taskId: Int, isCompleted: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskDao.checkTask(taskId, isCompleted)
+        }
+    }
 }
 

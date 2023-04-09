@@ -18,9 +18,14 @@ fun TaskList(
 
     LazyColumn {
         items(tasks.size) { index ->
-            TaskItem(task = tasks[index], navController = navController, onDeleteClick = {
-                viewModel.deleteTask(tasks[index].id)
-            })
+            TaskItem(
+                task = tasks[index],
+                navController = navController,
+                onDeleteClick = {
+                    viewModel.deleteTask(tasks[index].id)},
+                onTaskCheckChanged = { task, isChecked ->
+                    viewModel.checkTask(task.id, isCompleted = isChecked)
+                })
         }
     }
 }
