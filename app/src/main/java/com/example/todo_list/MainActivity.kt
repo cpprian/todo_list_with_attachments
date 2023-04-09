@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.todo_list.task.AboutTaskScreen
 import com.example.todo_list.task.AddTaskScreen
 import com.example.todo_list.task.EditTaskScreen
 import com.example.todo_list.ui.MainScreen
@@ -56,6 +57,19 @@ class MainActivity : ComponentActivity() {
             ) { backStackEntry ->
                 val taskId = backStackEntry.arguments?.getInt("taskId") ?: 0
                 EditTaskScreen(
+                    viewModel = viewModel,
+                    id = taskId,
+                    onNavigateUp = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+            composable(
+                route = "about_task_screen/{taskId}",
+                arguments = listOf(navArgument("taskId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val taskId = backStackEntry.arguments?.getInt("taskId") ?: 0
+                AboutTaskScreen(
                     viewModel = viewModel,
                     id = taskId,
                     onNavigateUp = {

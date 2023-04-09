@@ -32,3 +32,11 @@ fun Priority.toInt(): Int {
         Priority.HIGH -> 2
     }
 }
+
+fun Priority.toString(): String {
+    return when (this) {
+        Priority.LOW -> "LOW"
+        Priority.MEDIUM -> "MEDIUM"
+        Priority.HIGH -> "HIGH"
+    }
+}
