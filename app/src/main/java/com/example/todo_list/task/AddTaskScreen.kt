@@ -3,10 +3,7 @@ package com.example.todo_list.task
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -14,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.todo_list.R
@@ -32,6 +30,7 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var tag by remember { mutableStateOf("") }
+    var isNotified by remember { mutableStateOf(false) }
     val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
     val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
 
@@ -85,6 +84,19 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
             selectedDate = selectedDate,
             selectedTime = selectedTime)
         Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Checkbox(
+                checked = isNotified,
+                onCheckedChange = { isNotified = it })
+            Text(
+                text = stringResource(R.string.notify_task),
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                fontWeight = FontWeight.Bold)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
                 val newTask = Task(
@@ -93,6 +105,7 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
                     priority = viewModel.priority.value.toInt(),
                     doneAt = selectedDate.timeInMillis + selectedTime.timeInMillis - Calendar.getInstance().timeInMillis,
                     tag = tag,
+                    isNotified = isNotified
                 )
                 viewModel.insertTask(newTask)
                 onNavigateUp()

@@ -3,10 +3,7 @@ package com.example.todo_list.task
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -16,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -45,6 +43,7 @@ fun EditTaskScreen(
     var description by remember { mutableStateOf(task.description) }
     var priority by remember { mutableStateOf(toPriority(task.priority)) }
     var tag by remember { mutableStateOf(task.tag) }
+    var isNotified by remember { mutableStateOf(task.isNotified) }
     val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
     val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
 
@@ -100,6 +99,19 @@ fun EditTaskScreen(
             selectedDate = selectedDate,
             selectedTime = selectedTime)
         Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Checkbox(
+                checked = isNotified,
+                onCheckedChange = { isNotified = it })
+            Text(
+                text = stringResource(R.string.notify_task),
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                fontWeight = FontWeight.Bold)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
                 val updatedTask = task.copy(
@@ -108,6 +120,7 @@ fun EditTaskScreen(
                     priority = priority.toInt(),
                     doneAt = selectedDate.timeInMillis + selectedTime.timeInMillis - Calendar.getInstance().timeInMillis,
                     tag = tag,
+                    isNotified = isNotified
                 )
                 viewModel.insertTask(updatedTask)
                 onNavigateUp()

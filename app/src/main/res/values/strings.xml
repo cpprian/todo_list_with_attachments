@@ -3,4 +3,5 @@
     <string name="title_task">Title</string>
     <string name="description_task">Description</string>
     <string name="category_task">Category</string>
+    <string name="notify_task">Notify</string>
 </resources>
