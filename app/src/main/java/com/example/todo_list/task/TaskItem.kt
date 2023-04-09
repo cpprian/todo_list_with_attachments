@@ -9,6 +9,9 @@ import androidx.compose.material.icons.filled.Attachment
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +22,8 @@ import androidx.navigation.NavController
 import com.example.todo_list.constants.toColor
 import com.example.todo_list.constants.toPriority
 import com.example.todo_list.db.Task
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun TaskItem(
@@ -28,6 +33,13 @@ fun TaskItem(
     onTaskCheckChanged: (Task, Boolean) -> Unit
 ) {
     val context = LocalContext.current
+    val createdAt by remember { mutableStateOf(task.createdAt) }
+    val doneAt by remember { mutableStateOf(task.doneAt) }
+    val dateDoneAt = Date(doneAt)
+    val dateCreatedAt = Date(createdAt)
+    val dateFormat = SimpleDateFormat("MMM d, yyyy h:mm a", Locale.getDefault())
+    val formattedDoneAt = dateFormat.format(dateDoneAt)
+    val formattedCreatedAt = dateFormat.format(dateCreatedAt)
 
     Card(
         modifier = Modifier
@@ -122,7 +134,7 @@ fun TaskItem(
                         color = if (task.isCompleted) Color.Gray else Color.Black
                     )
                     Text(
-                        text = "${task.createdAt}",
+                        text = formattedCreatedAt,
                         style = MaterialTheme.typography.body2,
                         color = if (task.isCompleted) Color.Gray else Color.Black
                     )
@@ -140,7 +152,7 @@ fun TaskItem(
                         color = if (task.isCompleted) Color.Gray else Color.Black
                     )
                     Text(
-                        text = "${task.doneAt}",
+                        text = formattedDoneAt,
                         style = MaterialTheme.typography.body2,
                         color = if (task.isCompleted) Color.Gray else Color.Black
                     )

@@ -29,6 +29,8 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
     var description by remember { mutableStateOf("") }
     val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
     val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
+    var doneAtDate by remember { mutableStateOf("") }
+    var doneAtTime by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -73,6 +75,8 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
                                 selectedDate.set(Calendar.YEAR, year)
                                 selectedDate.set(Calendar.MONTH, month)
                                 selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                                doneAtDate = "${selectedDate.get(Calendar.DAY_OF_MONTH)}/" +
+                                        "${selectedDate.get(Calendar.MONTH)}/${selectedDate.get(Calendar.YEAR)}"
                             },
                             selectedDate.get(Calendar.YEAR),
                             selectedDate.get(Calendar.MONTH),
@@ -84,8 +88,7 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
                     Text(text = "Date")
                 }
                 Text(
-                    text = "${selectedDate.get(Calendar.DAY_OF_MONTH)}/" +
-                            "${selectedDate.get(Calendar.MONTH)}/${selectedDate.get(Calendar.YEAR)}",
+                    text = doneAtDate,
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black)
@@ -101,6 +104,8 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
                             { view, hourOfDay, minute ->
                                 selectedTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
                                 selectedTime.set(Calendar.MINUTE, minute)
+                                doneAtTime = "${selectedTime.get(Calendar.HOUR_OF_DAY)}:" +
+                                        "${selectedTime.get(Calendar.MINUTE)}"
                             },
                             selectedTime.get(Calendar.HOUR_OF_DAY),
                             selectedTime.get(Calendar.MINUTE),
@@ -112,7 +117,7 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
                     Text(text = "Time")
                 }
                 Text(
-                    text = "${selectedTime.get(Calendar.HOUR_OF_DAY)}:${selectedTime.get(Calendar.MINUTE)}",
+                    text = doneAtTime,
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black)
@@ -125,7 +130,7 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
                     title = title,
                     description = description,
                     priority = viewModel.priority.value.toInt(),
-                    doneAt = selectedDate.timeInMillis + selectedTime.timeInMillis
+                    doneAt = selectedDate.timeInMillis + selectedTime.timeInMillis - Calendar.getInstance().timeInMillis
                 )
                 viewModel.insertTask(newTask)
                 onNavigateUp()
