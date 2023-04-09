@@ -22,10 +22,12 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     var priority: MutableState<Priority> = mutableStateOf(Priority.LOW)
     var sortBy: MutableStateFlow<Boolean> = MutableStateFlow(false)
     var onlyUncompleted: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    var sortOption: MutableStateFlow<String> = MutableStateFlow("")
 
     fun getTasks() {
         tasks = taskDao.getAll().asLiveData()
     }
+
     fun insertTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             taskDao.insert(task)

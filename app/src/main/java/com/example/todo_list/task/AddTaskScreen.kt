@@ -29,7 +29,7 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
 
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var tag by remember { mutableStateOf("") }
+    var tag by remember { mutableStateOf("None") }
     var isNotified by remember { mutableStateOf(false) }
     val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
     val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
