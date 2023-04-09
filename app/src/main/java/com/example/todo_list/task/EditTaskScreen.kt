@@ -1,14 +1,20 @@
 package com.example.todo_list.task
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -30,6 +36,7 @@ fun EditTaskScreen(
     viewModel: TaskViewModel,
     onNavigateUp: () -> Unit
 ) {
+    val context = LocalContext.current
     val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
 
     val task = viewModel.getSelectedTask(id).observeAsState().value
@@ -43,6 +50,15 @@ fun EditTaskScreen(
     var isNotified by remember { mutableStateOf(task.isNotified) }
     val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
     val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
+    var attachment by remember { mutableStateOf(task.attachment) }
+
+    val pickFile = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            val inputStream = context.contentResolver.openInputStream(uri)
+            attachment = inputStream?.readBytes()
+        }
+    )
 
     Column(
         modifier = Modifier
@@ -107,6 +123,28 @@ fun EditTaskScreen(
                 style = MaterialTheme.typography.body1,
                 modifier = Modifier.align(Alignment.CenterVertically),
                 fontWeight = FontWeight.Bold)
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.AttachFile,
+                contentDescription = "Attach file",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { pickFile.launch("*/*") },
+                tint = MaterialTheme.colors.primary
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            attachment?.let {
+                Text(
+                    text = "Attached file (${it.size} bytes)",
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.wrapContentWidth()
+                )
+            }
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(

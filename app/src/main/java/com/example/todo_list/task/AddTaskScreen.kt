@@ -1,13 +1,20 @@
 package com.example.todo_list.task
 
+import android.annotation.SuppressLint
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -22,9 +29,11 @@ import com.example.todo_list.db.Task
 import com.example.todo_list.ui.view.TaskViewModel
 import java.util.*
 
+@SuppressLint("Recycle")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
+    val context = LocalContext.current
     val keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
 
     var title by remember { mutableStateOf("") }
@@ -33,6 +42,15 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
     var isNotified by remember { mutableStateOf(false) }
     val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
     val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
+    var attachment by remember { mutableStateOf<ByteArray?>(null) }
+
+    val pickFile = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            val inputStream = context.contentResolver.openInputStream(uri)
+            attachment = inputStream?.readBytes()
+        }
+    )
 
     Column(
         modifier = Modifier
@@ -97,6 +115,26 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
                 fontWeight = FontWeight.Bold)
         }
         Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.AttachFile,
+                contentDescription = "Attach file",
+                modifier = Modifier.clickable { pickFile.launch("*/*") },
+                tint = MaterialTheme.colors.primary
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            attachment?.let {
+                Text(
+                    text = "Attached file (${it.size} bytes)",
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.wrapContentWidth()
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
                 val newTask = Task(
@@ -105,9 +143,11 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
                     priority = viewModel.priority.value.toInt(),
                     doneAt = selectedDate.timeInMillis + selectedTime.timeInMillis - Calendar.getInstance().timeInMillis,
                     tag = tag,
-                    isNotified = isNotified
+                    isNotified = isNotified,
+                    attachment = attachment
                 )
                 viewModel.insertTask(newTask)
+
                 onNavigateUp()
             }
         ) {

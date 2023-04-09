@@ -6,14 +6,17 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.todo_list.constants.toColor
 import com.example.todo_list.constants.toPriority
 import com.example.todo_list.ui.view.TaskViewModel
 import com.example.todo_list.util.toDateFormat
+import kotlinx.coroutines.launch
 
 @Composable
 fun AboutTaskScreen(
@@ -25,6 +28,9 @@ fun AboutTaskScreen(
     if (task?.title == null) {
         return
     }
+
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -96,6 +102,22 @@ fun AboutTaskScreen(
                     text = task.doneAt.toDateFormat(),
                     style = MaterialTheme.typography.body2
                 )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        if (task.attachment != null) {
+            Button(
+                onClick = {
+                      scope.launch {
+                          val attachment = task.attachment
+                          viewModel.openAttachment(attachment, context)
+                      }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(text = "Open attachment")
             }
         }
         Spacer(modifier = Modifier.height(16.dp))

@@ -1,8 +1,11 @@
 package com.example.todo_list.ui.view
 
 import android.app.Application
+import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.content.FileProvider
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
@@ -11,9 +14,12 @@ import com.example.todo_list.constants.Priority
 import com.example.todo_list.db.Task
 import com.example.todo_list.db.TaskDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -73,6 +79,27 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             taskDao.checkTask(taskId, isCompleted)
         }
+    }
+
+    fun openAttachment(attachment: ByteArray, context: Context) {
+        val tempFile = File.createTempFile("attachment", null, context.cacheDir)
+        val fos = FileOutputStream(tempFile)
+        fos.write(attachment)
+        fos.flush()
+        fos.close()
+
+        val fileUri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            tempFile
+        )
+
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(fileUri, "*/*")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+
+        context.startActivity(intent)
     }
 }
 
