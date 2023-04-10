@@ -21,11 +21,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.todo_list.MainActivity
 import com.example.todo_list.R
 import com.example.todo_list.ui.components.DateTimePicker
 import com.example.todo_list.ui.components.PriorityComponent
 import com.example.todo_list.constants.toInt
 import com.example.todo_list.db.Task
+import com.example.todo_list.notifications.NotificationService
 import com.example.todo_list.ui.view.TaskViewModel
 import java.util.*
 
@@ -43,6 +45,8 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
     val selectedDate by remember { mutableStateOf(Calendar.getInstance()) }
     val selectedTime by remember { mutableStateOf(Calendar.getInstance()) }
     var attachment by remember { mutableStateOf<ByteArray?>(null) }
+
+    val service = NotificationService(context)
 
     val pickFile = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -147,6 +151,14 @@ fun AddTaskScreen(viewModel: TaskViewModel, onNavigateUp: () -> Unit) {
                     attachment = attachment
                 )
                 viewModel.insertTask(newTask)
+
+                if (isNotified) {
+                    service.showNotification(
+                        title = title,
+                        description = description,
+                        doneAt = selectedDate.timeInMillis + selectedTime.timeInMillis - Calendar.getInstance().timeInMillis,
+                    )
+                }
 
                 onNavigateUp()
             }

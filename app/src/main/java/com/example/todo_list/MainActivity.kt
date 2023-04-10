@@ -1,5 +1,9 @@
 package com.example.todo_list
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.todo_list.notifications.NotificationService
 import com.example.todo_list.ui.task.AboutTaskScreen
 import com.example.todo_list.ui.task.AddTaskScreen
 import com.example.todo_list.ui.task.EditTaskScreen
@@ -23,11 +28,24 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createNotificationChannel()
         setContent {
             Todo_listTheme{
                 TodoListApp(viewModel = viewModel)
             }
         }
+    }
+
+    private fun createNotificationChannel() {
+        val channel = NotificationChannel(
+            NotificationService.CHANNEL_ID,
+            "TodoList",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.description = "Used for the increment counter notifications"
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     @Composable
