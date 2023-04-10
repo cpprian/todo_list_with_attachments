@@ -23,7 +23,7 @@ interface TaskDao {
     @Query("SELECT * FROM tasks ORDER BY doneAt ASC, priority DESC")
     fun sortByPriorityHigh(): Flow<List<Task>>
 
-    @Query("SELECT * FROM tasks WHERE title LIKE :searchQuery OR description LIKE :searchQuery")
+    @Query("SELECT * FROM tasks WHERE title LIKE :searchQuery COLLATE NOCASE OR description LIKE :searchQuery COLLATE NOCASE")
     fun searchDatabase(searchQuery: String): Flow<List<Task>>
 
     @Query("SELECT * FROM tasks WHERE isCompleted = 0")

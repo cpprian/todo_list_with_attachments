@@ -30,6 +30,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     var onlyUncompleted: MutableStateFlow<Boolean> = MutableStateFlow(false)
     var sortOption: MutableStateFlow<String> = MutableStateFlow("")
     var notificationLength: MutableStateFlow<Int> = MutableStateFlow(0)
+    var searchQuery: MutableStateFlow<String> = MutableStateFlow("")
 
     fun getTasks() {
         tasks = taskDao.getAll().asLiveData()
@@ -59,8 +60,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         tasks = taskDao.sortByPriorityHigh().asLiveData()
     }
 
-    fun searchDatabase(searchQuery: String): LiveData<List<Task>> {
-        return taskDao.searchDatabase(searchQuery).asLiveData()
+    fun searchDatabase(searchQuery: String) {
+        tasks = taskDao.searchDatabase(searchQuery).asLiveData()
     }
 
     fun getUncompletedTasks() {

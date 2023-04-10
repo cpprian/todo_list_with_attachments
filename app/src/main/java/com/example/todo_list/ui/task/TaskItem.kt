@@ -1,4 +1,4 @@
-package com.example.todo_list.task
+package com.example.todo_list.ui.task
 
 import android.widget.Toast
 import androidx.compose.foundation.background

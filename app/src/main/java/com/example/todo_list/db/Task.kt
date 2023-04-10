@@ -14,5 +14,6 @@ data class Task(
     val isNotified: Boolean = false,
     val tag: String = "None",
     val priority: Int = 0,
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     val attachment: ByteArray? = null,
 )

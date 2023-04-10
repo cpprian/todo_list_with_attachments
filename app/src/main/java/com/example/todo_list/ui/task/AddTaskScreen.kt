@@ -1,4 +1,4 @@
-package com.example.todo_list.task
+package com.example.todo_list.ui.task
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -22,8 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.todo_list.R
-import com.example.todo_list.components.DateTimePicker
-import com.example.todo_list.components.PriorityComponent
+import com.example.todo_list.ui.components.DateTimePicker
+import com.example.todo_list.ui.components.PriorityComponent
 import com.example.todo_list.constants.toInt
 import com.example.todo_list.db.Task
 import com.example.todo_list.ui.view.TaskViewModel

@@ -1,4 +1,4 @@
-package com.example.todo_list.components
+package com.example.todo_list.ui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

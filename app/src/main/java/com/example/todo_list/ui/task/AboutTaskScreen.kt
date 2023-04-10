@@ -1,4 +1,4 @@
-package com.example.todo_list.task
+package com.example.todo_list.ui.task
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button

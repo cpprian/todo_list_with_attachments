@@ -10,10 +10,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.todo_list.task.AboutTaskScreen
-import com.example.todo_list.task.AddTaskScreen
-import com.example.todo_list.task.EditTaskScreen
+import com.example.todo_list.ui.task.AboutTaskScreen
+import com.example.todo_list.ui.task.AddTaskScreen
+import com.example.todo_list.ui.task.EditTaskScreen
 import com.example.todo_list.ui.MainScreen
+import com.example.todo_list.ui.search.SearchScreen
 import com.example.todo_list.ui.theme.Todo_listTheme
 import com.example.todo_list.ui.view.TaskViewModel
 
@@ -79,6 +80,14 @@ class MainActivity : ComponentActivity() {
             }
             composable(route = "settings_screen") {
                 SettingsScreen(
+                    viewModel = viewModel,
+                    onNavigateUp = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+            composable(route = "search_screen") {
+                SearchScreen(
                     viewModel = viewModel,
                     onNavigateUp = {
                         navController.popBackStack()

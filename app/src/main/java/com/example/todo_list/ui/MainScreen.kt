@@ -11,9 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.todo_list.R
-import com.example.todo_list.task.TaskList
+import com.example.todo_list.ui.task.TaskList
 import com.example.todo_list.ui.view.TaskViewModel
 
 @Composable
@@ -22,6 +23,8 @@ fun MainScreen(
     navController: NavController,
     onAddTaskClick: () -> Unit
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -47,9 +50,7 @@ fun MainScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        /* TODO */
-                    }) {
+                    IconButton(onClick = { navController.navigate("search_screen") }) {
                         Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.search))
                     }
                 },

@@ -1,4 +1,4 @@
-package com.example.todo_list.components
+package com.example.todo_list.ui.components
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
